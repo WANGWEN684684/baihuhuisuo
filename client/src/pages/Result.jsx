@@ -186,6 +186,19 @@ const ResultPage = () => {
       </div>
 
       <div className="px-4 space-y-6">
+        {/* Avatar Analysis */}
+        {analysisResult.avatar_analysis && (
+          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-purple-500">
+            <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
+              <span className="text-2xl mr-2">🧐</span>
+              头像辣评
+            </h2>
+            <div className="text-gray-700 italic font-medium">
+              "{analysisResult.avatar_analysis}"
+            </div>
+          </div>
+        )}
+
         {/* Detailed Analysis */}
         <div className="bg-white rounded-xl shadow-sm p-6">
           <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
@@ -196,6 +209,19 @@ const ResultPage = () => {
             {analysisResult.details}
           </div>
         </div>
+
+        {/* Icebreaker */}
+        {analysisResult.icebreaker && (
+          <div className="bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl shadow-sm p-6 border border-pink-100">
+            <h2 className="text-lg font-bold text-pink-600 mb-4 flex items-center">
+              <span className="text-2xl mr-2">🧊</span>
+              破冰关键
+            </h2>
+            <div className="text-gray-800 font-bold text-lg">
+              {analysisResult.icebreaker}
+            </div>
+          </div>
+        )}
 
         {/* Suggestions */}
         {analysisResult.suggestions && (
