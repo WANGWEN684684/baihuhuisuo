@@ -26,11 +26,5 @@
       "src": "/(.*)",
       "dest": "/client/$1"
     }
-  ],
-  "functions": {
-    "server/index.js": {
-      "maxDuration": 60,
-      "memory": 1024
-    }
-  }
+  ]
 }
