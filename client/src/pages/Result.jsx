@@ -242,40 +242,67 @@ const ResultPage = () => {
         )}
 
         {/* Warnings */}
-        {analysisResult.warnings && (
-          <div className="bg-white rounded-xl shadow-sm p-6 border-l-4 border-red-500">
+        <div className="bg-red-50 rounded-xl shadow-sm p-6 border border-red-100">
+          <h2 className="text-lg font-bold text-red-600 mb-4 flex items-center">
+            <span className="w-1 h-6 bg-red-500 mr-2 rounded-full"></span>
+            雷区提醒
+          </h2>
+          <ul className="space-y-3">
+            {analysisResult.warnings.map((warning, index) => (
+              <li key={index} className="flex items-start text-red-700">
+                <span className="mr-2 mt-1">⚠️</span>
+                <span>{warning}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* Difficulty Score */}
+        {analysisResult.difficulty_score && (
+          <div className="bg-white rounded-xl shadow-sm p-6">
             <h2 className="text-lg font-bold text-gray-800 mb-4 flex items-center">
-              <span className="text-xl mr-2">⚠️</span>
-              雷区提醒
+              <span className="text-2xl mr-2">📊</span>
+              难追指数
             </h2>
-            <ul className="space-y-4">
-              {analysisResult.warnings.map((item, idx) => (
-                <li key={idx} className="flex items-start">
-                  <span className="bg-red-100 text-red-600 rounded-full w-6 h-6 flex items-center justify-center text-xs mr-3 flex-shrink-0 mt-0.5">!</span>
-                  <span className="text-gray-700">{item}</span>
-                </li>
-              ))}
-            </ul>
+            <div className="flex items-center justify-between mb-4">
+              <div className="w-full bg-gray-200 rounded-full h-4 mr-4">
+                <div 
+                  className={`h-4 rounded-full transition-all duration-1000 ease-out ${
+                    analysisResult.difficulty_score.score > 80 ? 'bg-red-500' :
+                    analysisResult.difficulty_score.score > 50 ? 'bg-yellow-500' : 'bg-green-500'
+                  }`}
+                  style={{ width: `${analysisResult.difficulty_score.score}%` }}
+                ></div>
+              </div>
+              <span className={`text-2xl font-bold ${
+                analysisResult.difficulty_score.score > 80 ? 'text-red-500' :
+                analysisResult.difficulty_score.score > 50 ? 'text-yellow-500' : 'text-green-500'
+              }`}>
+                {analysisResult.difficulty_score.score}
+              </span>
+            </div>
+            <p className="text-gray-600 text-sm italic">
+              {analysisResult.difficulty_score.explanation}
+            </p>
           </div>
         )}
-      </div>
 
-      {/* Fixed Bottom Action Bar */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white p-4 shadow-top flex space-x-4 border-t border-gray-100 z-10">
-        <button 
-          onClick={handleRetry}
-          className="flex-1 border border-gray-300 text-gray-700 font-bold py-3 rounded-xl flex items-center justify-center active:scale-95 transition-transform"
-        >
-          <RefreshCw className="mr-2 w-5 h-5" />
-          重新分析
-        </button>
-        <button 
-          onClick={handleSave}
-          className="flex-1 bg-primary text-white font-bold py-3 rounded-xl shadow-md flex items-center justify-center active:scale-95 transition-transform"
-        >
-          <Save className="mr-2 w-5 h-5" />
-          保存结果
-        </button>
+        <div className="flex gap-4 pt-4">
+          <button 
+            onClick={handleRetry}
+            className="flex-1 bg-white border border-gray-200 text-gray-600 py-3 rounded-xl font-bold shadow-sm flex items-center justify-center gap-2 active:scale-95"
+          >
+            <RefreshCw size={20} />
+            再测一个
+          </button>
+          <button 
+            onClick={handleSave}
+            className="flex-1 bg-primary text-white py-3 rounded-xl font-bold shadow-md flex items-center justify-center gap-2 active:scale-95"
+          >
+            <Save size={20} />
+            保存结果
+          </button>
+        </div>
       </div>
     </div>
   );

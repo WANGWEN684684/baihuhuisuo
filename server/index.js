@@ -93,7 +93,11 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
     "红线1：基于TA的性格底色，绝对不能触碰的雷区。",
     "红线2：TA最反感的沟通方式或行为举止。",
     "红线3：玄学层面的相处禁忌（如：近期水逆期间注意什么）。"
-  ]
+  ],
+  "difficulty_score": {
+    "score": 85,
+    "explanation": "简要说明为什么给这个分数（例如：'TA防御机制较强，需要极大的耐心'）。"
+  }
 }
 
 请确保返回的是标准的 JSON 格式，不要包含 Markdown 标记（如 \`\`\`json ... \`\`\`），直接返回 JSON 对象。
