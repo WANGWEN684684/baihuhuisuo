@@ -133,7 +133,7 @@ JSON结构如下：
       return res.status(500).json({ success: false, message: 'Server configuration error: API Key missing' });
     }
 
-    console.log("Calling Doubao API with model: ep-20250228172836-9rplp");
+    console.log("Calling Doubao API with model: ep-20260306165603-kf74f");
     
     // Call Doubao API
     // Note: You need to verify the correct endpoint and model name for Doubao Vision
@@ -141,7 +141,7 @@ JSON结构如下：
     const response = await axios.post(
       'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
       {
-        model: "ep-20250228172836-9rplp",
+        model: "ep-20260306165603-kf74f",
         messages: [
           {
             role: "user",
