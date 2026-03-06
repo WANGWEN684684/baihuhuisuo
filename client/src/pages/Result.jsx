@@ -25,10 +25,66 @@ const ResultPage = () => {
 
     try {
       const data = new FormData();
-      if (avatar) data.append('avatar', avatar);
-      moments.forEach(file => data.append('moments', file));
+      
+      // Helper function to compress image if needed
+      const compressImage = async (file, maxSizeMB = 1) => {
+        if (file.size <= maxSizeMB * 1024 * 1024) return file;
+        
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              let width = img.width;
+              let height = img.height;
+              
+              // Scale down if too large
+              const maxDimension = 1500;
+              if (width > maxDimension || height > maxDimension) {
+                if (width > height) {
+                  height = Math.round((height * maxDimension) / width);
+                  width = maxDimension;
+                } else {
+                  width = Math.round((width * maxDimension) / height);
+                  height = maxDimension;
+                }
+              }
+              
+              canvas.width = width;
+              canvas.height = height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0, width, height);
+              
+              canvas.toBlob((blob) => {
+                const newFile = new File([blob], file.name, {
+                  type: 'image/jpeg',
+                  lastModified: Date.now(),
+                });
+                resolve(newFile);
+              }, 'image/jpeg', 0.7); // 0.7 quality
+            };
+          };
+        });
+      };
+
+      if (avatar) {
+        const compressedAvatar = await compressImage(avatar);
+        data.append('avatar', compressedAvatar);
+      }
+      
+      for (const file of moments) {
+        const compressedFile = await compressImage(file);
+        data.append('moments', compressedFile);
+      }
+      
       if (chats) {
-        chats.forEach(file => data.append('chats', file));
+        for (const file of chats) {
+          const compressedFile = await compressImage(file);
+          data.append('chats', compressedFile);
+        }
       }
       
       data.append('zodiac', formData.zodiac || '');
@@ -54,7 +110,14 @@ const ResultPage = () => {
       }
     } catch (err) {
       console.error(err);
-      const errorMessage = err.response?.data?.message || err.message || '网络异常或服务器错误';
+      let errorMessage = '网络异常或服务器错误';
+      if (err.response?.status === 413) {
+        errorMessage = '上传的图片总大小太大，请减少图片数量或使用更小的图片';
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
       setError(errorMessage + '，请稍后重试');
     } finally {
       setLoading(false);
