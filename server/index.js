@@ -183,7 +183,7 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`
         },
-        timeout: 120000 // 120s timeout for AI
+        timeout: 55000 // Set timeout to 55 seconds (slightly less than Vercel's 60s limit)
       }
     );
 

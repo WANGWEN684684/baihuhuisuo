@@ -27,7 +27,7 @@ const ResultPage = () => {
       const data = new FormData();
       
       // Helper function to compress image if needed
-      const compressImage = async (file, maxSizeMB = 1) => {
+      const compressImage = async (file, maxSizeMB = 0.5) => { // Reduced to 0.5MB for faster upload
         if (file.size <= maxSizeMB * 1024 * 1024) return file;
         
         return new Promise((resolve) => {
@@ -42,7 +42,7 @@ const ResultPage = () => {
               let height = img.height;
               
               // Scale down if too large
-              const maxDimension = 1500;
+              const maxDimension = 1024; // Reduced to 1024px
               if (width > maxDimension || height > maxDimension) {
                 if (width > height) {
                   height = Math.round((height * maxDimension) / width);
@@ -64,7 +64,7 @@ const ResultPage = () => {
                   lastModified: Date.now(),
                 });
                 resolve(newFile);
-              }, 'image/jpeg', 0.7); // 0.7 quality
+              }, 'image/jpeg', 0.6); // 0.6 quality
             };
           };
         });
@@ -149,7 +149,7 @@ const ResultPage = () => {
         </motion.div>
         <h2 className="text-xl font-bold text-gray-800 mb-2">AI正在深度分析...</h2>
         <p className="text-gray-600">正在解读TA的性格特质与潜在心意</p>
-        <p className="text-gray-400 text-sm mt-4">预计需要 15-30 秒</p>
+        <p className="text-gray-400 text-sm mt-4">分析过程可能需要30-60秒，请耐心等待...</p>
       </div>
     );
   }
