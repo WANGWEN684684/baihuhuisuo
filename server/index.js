@@ -90,7 +90,8 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
   "difficulty_score": {
     "score": 85,
     "explanation": "简要说明打分理由（20字以内）。"
-  }
+  },
+  "rage_quit": "【如果不追了】请根据TA的性格缺陷，生成一句能瞬间激怒TA、让TA破防的毒舌金句。要极其犀利、一针见血且好笑。例如：'别装了，你朋友圈那岁月静好的样子，掩盖不住你缺爱又自卑的灵魂。'"
 }
 
 请确保返回的是标准的 JSON 格式，不要包含 Markdown 标记，直接返回 JSON 对象。

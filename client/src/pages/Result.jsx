@@ -289,6 +289,21 @@ const ResultPage = () => {
           </div>
         )}
 
+        {/* Rage Quit / Provocation */}
+        {analysisResult.rage_quit && (
+          <div className="bg-gradient-to-r from-gray-800 to-black text-white rounded-xl shadow-lg p-6 border-2 border-gray-700 relative overflow-hidden group">
+            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-red-600 rounded-full opacity-20 blur-xl group-hover:opacity-40 transition-opacity duration-500"></div>
+            <h2 className="text-lg font-bold text-red-400 mb-4 flex items-center relative z-10">
+              <span className="text-2xl mr-2">💣</span>
+              不追了？一句话激怒TA
+            </h2>
+            <div className="text-white font-bold text-lg italic relative z-10 tracking-wide leading-relaxed">
+              "{analysisResult.rage_quit}"
+            </div>
+            <p className="text-gray-400 text-xs mt-4 text-right relative z-10">* 慎用！后果自负 *</p>
+          </div>
+        )}
+
         <div className="flex gap-4 pt-4">
           <button 
             onClick={handleRetry}
