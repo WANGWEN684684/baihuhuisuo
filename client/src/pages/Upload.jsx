@@ -22,8 +22,8 @@ const UploadPage = () => {
       alert('请上传目标对象微信头像');
       return;
     }
-    if (moments.length < 5) {
-      alert('请至少上传5张朋友圈截图');
+    if (moments.length < 3) {
+      alert('请至少上传3张朋友圈截图（挑重点）');
       return;
     }
 
@@ -88,11 +88,11 @@ const UploadPage = () => {
           <ImageUpload 
             label="朋友圈截图" 
             required
-            minFiles={5}
-            maxFiles={9}
+            minFiles={3}
+            maxFiles={5}
             files={moments}
             setFiles={setMoments}
-            helperText="请上传5-9张朋友圈截图，包含日常分享、动态等，越丰富分析越准"
+            helperText="请上传3-5张朋友圈截图，包含日常分享、动态等，越精华越准"
           />
         </div>
 
@@ -104,10 +104,10 @@ const UploadPage = () => {
           
           <ImageUpload 
             label="聊天截图" 
-            maxFiles={9}
+            maxFiles={3}
             files={chats}
             setFiles={setChats}
-            helperText="上传你们的日常对话截图，帮助AI分析相处模式与情感倾向"
+            helperText="最多上传3张聊天截图，挑最能代表你们互动风格的"
           />
         </div>
       </motion.div>

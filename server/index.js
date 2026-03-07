@@ -122,7 +122,7 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
         type: "text",
         text: "以下是目标对象的朋友圈截图："
       });
-      momentFiles.forEach((file, index) => {
+      momentFiles.slice(0, 5).forEach((file, index) => {
         content.push({
           type: "image_url",
           image_url: {
@@ -138,7 +138,7 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
         type: "text",
         text: "以下是与目标对象的聊天记录截图："
       });
-      chatFiles.forEach((file, index) => {
+      chatFiles.slice(0, 3).forEach((file, index) => {
         content.push({
           type: "image_url",
           image_url: {
@@ -170,7 +170,7 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
           }
         ],
         temperature: 0.7,
-        max_tokens: 2000
+        max_tokens: 1000
       },
       {
         headers: {
