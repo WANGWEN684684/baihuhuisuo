@@ -113,6 +113,8 @@ const ResultPage = () => {
       let errorMessage = '网络异常或服务器错误';
       if (err.response?.status === 413) {
         errorMessage = '上传的图片总大小太大，请减少图片数量或使用更小的图片';
+      } else if (err.response?.status === 504 || err.code === 'ECONNABORTED') {
+        errorMessage = 'AI 思考时间过长，请尝试减少上传的图片数量（建议只传 3-5 张关键图）后再试';
       } else if (err.response?.data?.message) {
         errorMessage = err.response.data.message;
       } else if (err.message) {
