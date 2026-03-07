@@ -27,7 +27,7 @@ const ResultPage = () => {
       const data = new FormData();
       
       // Helper function to compress image if needed
-      const compressImage = async (file, maxSizeMB = 0.5) => { // Reduced to 0.5MB for faster upload
+      const compressImage = async (file, maxSizeMB = 0.35) => { // Further reduce size for faster upload
         if (file.size <= maxSizeMB * 1024 * 1024) return file;
         
         return new Promise((resolve) => {
@@ -42,7 +42,7 @@ const ResultPage = () => {
               let height = img.height;
               
               // Scale down if too large
-              const maxDimension = 1024; // Reduced to 1024px
+              const maxDimension = 800; // Further reduce to 800px to shrink payload
               if (width > maxDimension || height > maxDimension) {
                 if (width > height) {
                   height = Math.round((height * maxDimension) / width);
@@ -64,7 +64,7 @@ const ResultPage = () => {
                   lastModified: Date.now(),
                 });
                 resolve(newFile);
-              }, 'image/jpeg', 0.6); // 0.6 quality
+              }, 'image/jpeg', 0.55); // Slightly lower quality
             };
           };
         });
@@ -75,13 +75,13 @@ const ResultPage = () => {
         data.append('avatar', compressedAvatar);
       }
       
-      for (const file of moments) {
+      for (const file of moments.slice(0, 5)) {
         const compressedFile = await compressImage(file);
         data.append('moments', compressedFile);
       }
       
       if (chats) {
-        for (const file of chats) {
+        for (const file of chats.slice(0, 3)) {
           const compressedFile = await compressImage(file);
           data.append('chats', compressedFile);
         }
