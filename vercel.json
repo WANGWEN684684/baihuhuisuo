@@ -1,23 +1,30 @@
 {
   "version": 2,
-  "functions": {
-    "server/index.js": {
-      "maxDuration": 60,
-      "memory": 1024
+  "builds": [
+    {
+      "src": "server/index.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
     }
-  },
+  ],
   "routes": [
     {
       "src": "/api/(.*)",
       "dest": "/server/index.js"
     },
     {
-      "src": "/assets/(.*)",
-      "dest": "/client/dist/assets/$1"
+      "src": "/",
+      "dest": "/client/index.html"
     },
     {
       "src": "/(.*)",
-      "dest": "/client/dist/index.html"
+      "dest": "/client/$1"
     }
   ]
 }
