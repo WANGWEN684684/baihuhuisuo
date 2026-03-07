@@ -155,31 +155,46 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
     }
 
     console.log("Calling Doubao API with model: ep-20260306165603-kf74f");
-    
-    // Call Doubao API
-    // Note: You need to verify the correct endpoint and model name for Doubao Vision
-    // Assuming standard OpenAI compatible endpoint provided by Volcengine
-    const response = await axios.post(
-      'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-      {
-        model: "ep-20260306165603-kf74f",
-        messages: [
-          {
-            role: "user",
-            content: content
-          }
-        ],
-        temperature: 0.7,
-        max_tokens: 1000
-      },
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`
+    const callModel = async (payloadContent, maxTokens, timeoutMs) => {
+      return axios.post(
+        'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+        {
+          model: "ep-20260306165603-kf74f",
+          messages: [
+            {
+              role: "user",
+              content: payloadContent
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: maxTokens
         },
-        timeout: 55000 // Set timeout to 55 seconds (slightly less than Vercel's 60s limit)
-      }
-    );
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          timeout: timeoutMs
+        }
+      );
+    };
+
+    let response;
+    try {
+      response = await callModel(content, 1000, 55000);
+    } catch (e) {
+      const isTimeout = e.code === 'ECONNABORTED' || (e.message && e.message.includes('timeout'));
+      if (!isTimeout) throw e;
+      const quickContent = [
+        { type: "text", text: "快速模式：仅使用关键信息进行分析。" },
+        { type: "text", text: "这是目标对象的微信头像：" },
+        { type: "image_url", image_url: { url: bufferToDataUrl(avatarFile.buffer, avatarFile.mimetype) } },
+        { type: "text", text: "以下是目标对象的朋友圈关键截图：" },
+        ...momentFiles.slice(0, 3).map(f => ({ type: "image_url", image_url: { url: bufferToDataUrl(f.buffer, f.mimetype) } })),
+        { type: "text", text: promptText }
+      ];
+      response = await callModel(quickContent, 800, 30000);
+    }
 
     console.log("Doubao API response received.");
     
