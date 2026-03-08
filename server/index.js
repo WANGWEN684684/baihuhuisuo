@@ -155,9 +155,10 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
     }
 
     console.log("Calling Doubao API with model: ep-20260306165603-kf74f");
+    const baseUrl = process.env.ARK_BASE_URL || 'https://ark.cn-beijing.volces.com/api/v3/chat/completions';
     const callModel = async (payloadContent, maxTokens, timeoutMs) => {
       return axios.post(
-        'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+        baseUrl,
         {
           model: "ep-20260306165603-kf74f",
           messages: [
@@ -180,11 +181,8 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
     };
 
     let response;
-    try {
-      response = await callModel(content, 1000, 55000);
-    } catch (e) {
-      const isTimeout = e.code === 'ECONNABORTED' || (e.message && e.message.includes('timeout'));
-      if (!isTimeout) throw e;
+    const mode = (req.query.mode || '').toLowerCase();
+    if (mode === 'fast') {
       const quickContent = [
         { type: "text", text: "快速模式：仅使用关键信息进行分析。" },
         { type: "text", text: "这是目标对象的微信头像：" },
@@ -194,6 +192,23 @@ app.post('/api/analyze', upload.any(), async (req, res) => {
         { type: "text", text: promptText }
       ];
       response = await callModel(quickContent, 800, 30000);
+    } else {
+      try {
+        response = await callModel(content, 1000, 55000);
+      } catch (e) {
+        const isTimeout = e.code === 'ECONNABORTED' || (e.message && e.message.includes('timeout')) || (e.code === 'ETIMEDOUT');
+        console.error('Primary model call failed:', e.code || e.message);
+        if (!isTimeout) throw e;
+        const quickContent = [
+          { type: "text", text: "快速模式：仅使用关键信息进行分析。" },
+          { type: "text", text: "这是目标对象的微信头像：" },
+          { type: "image_url", image_url: { url: bufferToDataUrl(avatarFile.buffer, avatarFile.mimetype) } },
+          { type: "text", text: "以下是目标对象的朋友圈关键截图：" },
+          ...momentFiles.slice(0, 3).map(f => ({ type: "image_url", image_url: { url: bufferToDataUrl(f.buffer, f.mimetype) } })),
+          { type: "text", text: promptText }
+        ];
+        response = await callModel(quickContent, 800, 30000);
+      }
     }
 
     console.log("Doubao API response received.");

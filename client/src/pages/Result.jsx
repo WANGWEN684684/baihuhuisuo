@@ -93,7 +93,7 @@ const ResultPage = () => {
       data.append('description', formData.description || '');
 
       // Use relative path for API calls
-      const apiUrl = '/api/analyze';
+      const apiUrl = '/api/analyze?mode=fast';
       console.log('Sending request to:', apiUrl);
       
       const response = await axios.post(apiUrl, data, {
